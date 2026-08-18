@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>신하니 포트폴리오</title>
 <meta name="description" content="신하니 PM 포트폴리오 - 모두의 외근, PAWINMATCH">
-<link rel="stylesheet" href="./pdf_viewer.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -66,26 +65,23 @@
     height: auto !important;
     display: block;
   }
-  /* PDF.js annotation layer for interactive clickable links */
-  .annotationLayer {
+  /* Overlay layer for clickable PDF links */
+  .link-overlay-layer {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  .annotationLayer .linkAnnotation a {
-    position: absolute;
-    font-size: 1em;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
+  }
+  .pdf-link-overlay {
+    pointer-events: auto;
+    display: block;
     cursor: pointer;
     border: 1px dashed transparent;
     transition: background 0.2s, border-color 0.2s;
   }
-  .annotationLayer .linkAnnotation a:hover {
+  .pdf-link-overlay:hover {
     background: rgba(76, 138, 100, 0.15);
     border-color: rgba(76, 138, 100, 0.5);
     border-radius: 4px;
@@ -168,36 +164,48 @@
         canvas.width = viewport.width;
         pageWrapper.appendChild(canvas);
 
-        const annotationLayerDiv = document.createElement('div');
-        annotationLayerDiv.className = 'annotationLayer';
-        pageWrapper.appendChild(annotationLayerDiv);
+        const linkLayerDiv = document.createElement('div');
+        linkLayerDiv.className = 'link-overlay-layer';
+        pageWrapper.appendChild(linkLayerDiv);
 
         container.appendChild(pageWrapper);
 
+        // Render Canvas
         await page.render({
           canvasContext: context,
           viewport: viewport
         }).promise;
 
-        const annotations = await page.getAnnotations();
-        if (annotations && annotations.length > 0) {
-          pdfjsLib.AnnotationLayer.render({
-            viewport: viewport.clone({ dontFlip: true }),
-            div: annotationLayerDiv,
-            annotations: annotations,
-            page: page,
-            linkService: {
-              getDestinationHash: () => '#',
-              getAnchorUrl: () => '#',
-              setHash: () => {},
-              executeNamedAction: () => {},
-              addLinkAttributes: (link, url, newWindow) => {
-                link.href = url;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
+        // Render Links dynamically
+        try {
+          const annotations = await page.getAnnotations();
+          if (annotations && annotations.length > 0) {
+            annotations.forEach(annot => {
+              const url = annot.url || annot.unsafeUrl;
+              if (annot.subtype === 'Link' && url) {
+                const rect = viewport.convertToViewportRectangle(annot.rect);
+                const left = Math.min(rect[0], rect[2]);
+                const top = Math.min(rect[1], rect[3]);
+                const width = Math.abs(rect[2] - rect[0]);
+                const height = Math.abs(rect[3] - rect[1]);
+
+                const linkEl = document.createElement('a');
+                linkEl.href = url;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.style.position = 'absolute';
+                linkEl.style.left = (left / viewport.width * 100) + '%';
+                linkEl.style.top = (top / viewport.height * 100) + '%';
+                linkEl.style.width = (width / viewport.width * 100) + '%';
+                linkEl.style.height = (height / viewport.height * 100) + '%';
+                linkEl.className = 'pdf-link-overlay';
+                
+                linkLayerDiv.appendChild(linkEl);
               }
-            }
-          });
+            });
+          }
+        } catch (linkErr) {
+          console.warn('링크 오버레이 생성 경고:', linkErr);
         }
       }
     }).catch(function(error) {
