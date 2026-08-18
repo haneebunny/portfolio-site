@@ -75,21 +75,14 @@
     display: block;
   }
   
-  /* Link Overlays with new tab target */
+  /* Pure transparent clickable link overlay (No hover effects) */
   .link-overlay {
     position: absolute;
     display: block;
     cursor: pointer;
-    border-radius: 6px;
-    background: rgba(76, 138, 100, 0.05);
-    border: 1.5px dashed rgba(76, 138, 100, 0.35);
-    transition: all 0.2s ease;
-  }
-  .link-overlay:hover {
-    background: rgba(76, 138, 100, 0.18);
-    border-color: #4C8A64;
-    box-shadow: 0 0 12px rgba(76, 138, 100, 0.3);
-    transform: scale(1.01);
+    background: transparent;
+    border: none;
+    outline: none;
   }
 
   footer {
@@ -109,10 +102,10 @@
   <!-- Page 01 (LIVE: whygeun101.com) -->
   <div class="page-card">
     <img src="images/page-01.jpg" alt="포트폴리오 페이지 1" loading="eager">
-    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 76.5%; top: 67%; width: 17%; height: 5.5%;" title="whygeun101.com 새창에서 열기"></a>
+    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 78.5%; top: 85%; width: 17%; height: 6.5%;" title="whygeun101.com 바로가기"></a>
   </div>
 
-  <!-- Pages 02 ~ 21 -->
+  <!-- Pages 02 ~ 11 -->
   <div class="page-card"><img src="images/page-02.jpg" alt="포트폴리오 페이지 2" loading="lazy"></div>
   <div class="page-card"><img src="images/page-03.jpg" alt="포트폴리오 페이지 3" loading="lazy"></div>
   <div class="page-card"><img src="images/page-04.jpg" alt="포트폴리오 페이지 4" loading="lazy"></div>
@@ -123,7 +116,14 @@
   <div class="page-card"><img src="images/page-09.jpg" alt="포트폴리오 페이지 9" loading="lazy"></div>
   <div class="page-card"><img src="images/page-10.jpg" alt="포트폴리오 페이지 10" loading="lazy"></div>
   <div class="page-card"><img src="images/page-11.jpg" alt="포트폴리오 페이지 11" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-12.jpg" alt="포트폴리오 페이지 12" loading="lazy"></div>
+
+  <!-- Page 12 (서비스 바로가기 · whygeun101.com) -->
+  <div class="page-card">
+    <img src="images/page-12.jpg" alt="포트폴리오 페이지 12" loading="lazy">
+    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 5%; top: 86.5%; width: 23.5%; height: 6%;" title="서비스 바로가기 · whygeun101.com"></a>
+  </div>
+
+  <!-- Pages 13 ~ 21 -->
   <div class="page-card"><img src="images/page-13.jpg" alt="포트폴리오 페이지 13" loading="lazy"></div>
   <div class="page-card"><img src="images/page-14.jpg" alt="포트폴리오 페이지 14" loading="lazy"></div>
   <div class="page-card"><img src="images/page-15.jpg" alt="포트폴리오 페이지 15" loading="lazy"></div>
@@ -134,12 +134,12 @@
   <div class="page-card"><img src="images/page-20.jpg" alt="포트폴리오 페이지 20" loading="lazy"></div>
   <div class="page-card"><img src="images/page-21.jpg" alt="포트폴리오 페이지 21" loading="lazy"></div>
 
-  <!-- Page 22 (PAWINMATCH links) -->
+  <!-- Page 22 (PAWINMATCH 3 buttons) -->
   <div class="page-card">
     <img src="images/page-22.jpg" alt="포트폴리오 페이지 22" loading="lazy">
-    <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 8%; top: 87.5%; width: 10.5%; height: 3.5%;" title="PAWINMATCH 서비스 새창에서 열기"></a>
-    <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 22.2%; top: 87.5%; width: 7.2%; height: 3.5%;" title="GitHub 새창에서 열기"></a>
-    <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 33.2%; top: 87.5%; width: 9.5%; height: 3.5%;" title="회고록 새창에서 열기"></a>
+    <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 6.2%; top: 85.5%; width: 14%; height: 6.5%;" title="PAWINMATCH 서비스 바로가기"></a>
+    <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 21.3%; top: 85.5%; width: 10.2%; height: 6.5%;" title="GitHub 바로가기"></a>
+    <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 32.5%; top: 85.5%; width: 13.2%; height: 6.5%;" title="프로젝트 회고 바로가기"></a>
   </div>
 </main>
 <footer>
