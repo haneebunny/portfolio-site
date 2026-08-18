@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>신하니 포트폴리오</title>
 <meta name="description" content="신하니 PM 포트폴리오 - 모두의 외근, PAWINMATCH">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -15,8 +16,8 @@
   header {
     position: sticky;
     top: 0;
-    z-index: 10;
-    background: rgba(244, 248, 245, 0.9);
+    z-index: 100;
+    background: rgba(244, 248, 245, 0.92);
     backdrop-filter: blur(8px);
     padding: 14px 20px;
     display: flex;
@@ -52,18 +53,49 @@
     flex-direction: column;
     gap: 20px;
   }
-  .page {
+  .pdf-page-wrapper {
+    position: relative;
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(31, 58, 43, 0.12);
     background: #fff;
-    line-height: 0;
   }
-  .page img {
-    width: 100%;
-    height: auto;
+  .pdf-page-wrapper canvas {
+    width: 100% !important;
+    height: auto !important;
     display: block;
+  }
+  /* PDF.js annotation layer for interactive clickable links */
+  .annotationLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .annotationLayer .linkAnnotation a {
+    position: absolute;
+    font-size: 1em;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: 1px dashed transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .annotationLayer .linkAnnotation a:hover {
+    background: rgba(76, 138, 100, 0.15);
+    border-color: rgba(76, 138, 100, 0.5);
+    border-radius: 4px;
+  }
+  .loading-box {
+    text-align: center;
+    padding: 60px 20px;
+    color: #4C8A64;
+    font-weight: 600;
+    font-size: 15px;
   }
   footer {
     text-align: center;
@@ -79,32 +111,83 @@
   <div class="brand">신하니 <span>portfolio</span></div>
   <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
 </header>
-<main>
-  <div class="page"><img src="images/page-01.jpg" alt="portfolio page 01" loading="lazy"></div>
-  <div class="page"><img src="images/page-02.jpg" alt="portfolio page 02" loading="lazy"></div>
-  <div class="page"><img src="images/page-03.jpg" alt="portfolio page 03" loading="lazy"></div>
-  <div class="page"><img src="images/page-04.jpg" alt="portfolio page 04" loading="lazy"></div>
-  <div class="page"><img src="images/page-05.jpg" alt="portfolio page 05" loading="lazy"></div>
-  <div class="page"><img src="images/page-06.jpg" alt="portfolio page 06" loading="lazy"></div>
-  <div class="page"><img src="images/page-07.jpg" alt="portfolio page 07" loading="lazy"></div>
-  <div class="page"><img src="images/page-08.jpg" alt="portfolio page 08" loading="lazy"></div>
-  <div class="page"><img src="images/page-09.jpg" alt="portfolio page 09" loading="lazy"></div>
-  <div class="page"><img src="images/page-10.jpg" alt="portfolio page 10" loading="lazy"></div>
-  <div class="page"><img src="images/page-11.jpg" alt="portfolio page 11" loading="lazy"></div>
-  <div class="page"><img src="images/page-12.jpg" alt="portfolio page 12" loading="lazy"></div>
-  <div class="page"><img src="images/page-13.jpg" alt="portfolio page 13" loading="lazy"></div>
-  <div class="page"><img src="images/page-14.jpg" alt="portfolio page 14" loading="lazy"></div>
-  <div class="page"><img src="images/page-15.jpg" alt="portfolio page 15" loading="lazy"></div>
-  <div class="page"><img src="images/page-16.jpg" alt="portfolio page 16" loading="lazy"></div>
-  <div class="page"><img src="images/page-17.jpg" alt="portfolio page 17" loading="lazy"></div>
-  <div class="page"><img src="images/page-18.jpg" alt="portfolio page 18" loading="lazy"></div>
-  <div class="page"><img src="images/page-19.jpg" alt="portfolio page 19" loading="lazy"></div>
-  <div class="page"><img src="images/page-20.jpg" alt="portfolio page 20" loading="lazy"></div>
-  <div class="page"><img src="images/page-21.jpg" alt="portfolio page 21" loading="lazy"></div>
-  <div class="page"><img src="images/page-22.jpg" alt="portfolio page 22" loading="lazy"></div>
+
+<main id="pdf-viewer">
+  <div class="loading-box">포트폴리오 PDF 및 링크를 불러오는 중입니다...</div>
 </main>
+
 <footer>
   신하니 &middot; re____@naver.com
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const container = document.getElementById('pdf-viewer');
+
+  pdfjsLib.getDocument('portfolio.pdf').promise.then(async function(pdf) {
+    container.innerHTML = '';
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      
+      const pageWrapper = document.createElement('div');
+      pageWrapper.className = 'pdf-page-wrapper';
+      
+      // Render at scale 2.0 for sharp quality on high-DPI screens
+      const viewport = page.getViewport({ scale: 2.0 });
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      pageWrapper.appendChild(canvas);
+
+      // Annotation layer for links
+      const annotationLayerDiv = document.createElement('div');
+      annotationLayerDiv.className = 'annotationLayer';
+      pageWrapper.appendChild(annotationLayerDiv);
+
+      container.appendChild(pageWrapper);
+
+      // Render canvas
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      }).promise;
+
+      // Render PDF annotation links
+      const annotations = await page.getAnnotations();
+      if (annotations && annotations.length > 0) {
+        pdfjsLib.AnnotationLayer.render({
+          viewport: viewport.clone({ dontFlip: true }),
+          div: annotationLayerDiv,
+          annotations: annotations,
+          page: page,
+          linkService: {
+            getDestinationHash: () => '#',
+            getAnchorUrl: () => '#',
+            setHash: () => {},
+            executeNamedAction: () => {},
+            addLinkAttributes: (link, url, newWindow) => {
+              link.href = url;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+            }
+          }
+        });
+      }
+    }
+  }).catch(function(error) {
+    console.error('PDF 불러오기 오류:', error);
+    container.innerHTML = `
+      <div class="loading-box" style="color: #c53030;">
+        PDF를 불러올 수 없습니다.<br><br>
+        <a class="dl" href="portfolio.pdf" download style="display:inline-block; margin-top:10px;">PDF 파일 직접다운로드</a>
+      </div>
+    `;
+  });
+</script>
 </body>
 </html>
