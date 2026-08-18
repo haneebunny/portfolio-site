@@ -11,14 +11,16 @@
     font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
     background: linear-gradient(180deg, #f4f8f5 0%, #eef4ef 100%);
     color: #1F3A2B;
+    min-height: 100vh;
   }
   header {
     position: sticky;
     top: 0;
     z-index: 100;
     background: rgba(244, 248, 245, 0.92);
-    backdrop-filter: blur(8px);
-    padding: 14px 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,85 +30,74 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #2E4A38;
-    font-size: 16px;
+    font-size: 17px;
   }
   header .brand span {
     color: #4C8A64;
+    font-weight: 500;
   }
   header a.dl {
     font-size: 13px;
     color: #fff;
     background: #4C8A64;
-    padding: 8px 14px;
+    padding: 9px 16px;
     border-radius: 20px;
     text-decoration: none;
     font-weight: 600;
-    transition: background .2s;
+    box-shadow: 0 2px 8px rgba(76, 138, 100, 0.25);
+    transition: all .2s ease;
   }
-  header a.dl:hover { background: #3d7352; }
+  header a.dl:hover {
+    background: #3d7352;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 138, 100, 0.35);
+  }
   main {
-    max-width: 1000px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 24px 16px 80px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
   }
-  .pdf-page-wrapper {
+  .page-card {
     position: relative;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(31, 58, 43, 0.12);
+    box-shadow: 0 6px 30px rgba(31, 58, 43, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
     background: #fff;
+    line-height: 0;
   }
-  .pdf-page-wrapper canvas {
-    width: 100% !important;
-    height: auto !important;
+  .page-card img {
+    width: 100%;
+    height: auto;
     display: block;
   }
-  /* Overlay layer for clickable PDF links */
-  .link-overlay-layer {
+  
+  /* Link Overlays with new tab target */
+  .link-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-  .pdf-link-overlay {
-    pointer-events: auto;
     display: block;
     cursor: pointer;
-    border: 1px dashed transparent;
-    transition: background 0.2s, border-color 0.2s;
+    border-radius: 6px;
+    background: rgba(76, 138, 100, 0.05);
+    border: 1.5px dashed rgba(76, 138, 100, 0.35);
+    transition: all 0.2s ease;
   }
-  .pdf-link-overlay:hover {
-    background: rgba(76, 138, 100, 0.15);
-    border-color: rgba(76, 138, 100, 0.5);
-    border-radius: 4px;
+  .link-overlay:hover {
+    background: rgba(76, 138, 100, 0.18);
+    border-color: #4C8A64;
+    box-shadow: 0 0 12px rgba(76, 138, 100, 0.3);
+    transform: scale(1.01);
   }
-  .loading-box {
-    text-align: center;
-    padding: 60px 20px;
-    color: #4C8A64;
-    font-weight: 600;
-    font-size: 15px;
-  }
-  .native-embed {
-    width: 100%;
-    height: 85vh;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(31, 58, 43, 0.12);
-  }
+
   footer {
     text-align: center;
     padding: 40px 20px 60px;
     color: #5E7266;
     font-size: 13px;
   }
-  footer a { color: #4C8A64; }
 </style>
 </head>
 <body>
@@ -114,105 +105,45 @@
   <div class="brand">신하니 <span>portfolio</span></div>
   <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
 </header>
+<main>
+  <!-- Page 01 (LIVE: whygeun101.com) -->
+  <div class="page-card">
+    <img src="images/page-01.jpg" alt="포트폴리오 페이지 1" loading="eager">
+    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 76.5%; top: 67%; width: 17%; height: 5.5%;" title="whygeun101.com 새창에서 열기"></a>
+  </div>
 
-<main id="pdf-viewer">
-  <div class="loading-box">포트폴리오 PDF 및 링크를 불러오는 중입니다...</div>
+  <!-- Pages 02 ~ 21 -->
+  <div class="page-card"><img src="images/page-02.jpg" alt="포트폴리오 페이지 2" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-03.jpg" alt="포트폴리오 페이지 3" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-04.jpg" alt="포트폴리오 페이지 4" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-05.jpg" alt="포트폴리오 페이지 5" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-06.jpg" alt="포트폴리오 페이지 6" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-07.jpg" alt="포트폴리오 페이지 7" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-08.jpg" alt="포트폴리오 페이지 8" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-09.jpg" alt="포트폴리오 페이지 9" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-10.jpg" alt="포트폴리오 페이지 10" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-11.jpg" alt="포트폴리오 페이지 11" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-12.jpg" alt="포트폴리오 페이지 12" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-13.jpg" alt="포트폴리오 페이지 13" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-14.jpg" alt="포트폴리오 페이지 14" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-15.jpg" alt="포트폴리오 페이지 15" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-16.jpg" alt="포트폴리오 페이지 16" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-17.jpg" alt="포트폴리오 페이지 17" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-18.jpg" alt="포트폴리오 페이지 18" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-19.jpg" alt="포트폴리오 페이지 19" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-20.jpg" alt="포트폴리오 페이지 20" loading="lazy"></div>
+  <div class="page-card"><img src="images/page-21.jpg" alt="포트폴리오 페이지 21" loading="lazy"></div>
+
+  <!-- Page 22 (PAWINMATCH links) -->
+  <div class="page-card">
+    <img src="images/page-22.jpg" alt="포트폴리오 페이지 22" loading="lazy">
+    <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 8%; top: 87.5%; width: 10.5%; height: 3.5%;" title="PAWINMATCH 서비스 새창에서 열기"></a>
+    <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 22.2%; top: 87.5%; width: 7.2%; height: 3.5%;" title="GitHub 새창에서 열기"></a>
+    <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 33.2%; top: 87.5%; width: 9.5%; height: 3.5%;" title="회고록 새창에서 열기"></a>
+  </div>
 </main>
-
 <footer>
   신하니 &middot; re____@naver.com
 </footer>
-
-<script src="./pdf.min.js"></script>
-<script>
-  if (typeof pdfjsLib !== 'undefined') {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
-  }
-
-  const container = document.getElementById('pdf-viewer');
-
-  function loadNativeFallback() {
-    container.innerHTML = `
-      <object data="portfolio.pdf#toolbar=1" type="application/pdf" class="native-embed">
-        <iframe src="portfolio.pdf" class="native-embed">
-          <div class="loading-box">
-            PDF를 뷰어로 불러올 수 없습니다.<br><br>
-            <a class="dl" href="portfolio.pdf" download>PDF 파일 다운로드하기</a>
-          </div>
-        </iframe>
-      </object>
-    `;
-  }
-
-  if (typeof pdfjsLib === 'undefined') {
-    loadNativeFallback();
-  } else {
-    pdfjsLib.getDocument('./portfolio.pdf').promise.then(async function(pdf) {
-      container.innerHTML = '';
-
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        
-        const pageWrapper = document.createElement('div');
-        pageWrapper.className = 'pdf-page-wrapper';
-        
-        const viewport = page.getViewport({ scale: 2.0 });
-        
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        pageWrapper.appendChild(canvas);
-
-        const linkLayerDiv = document.createElement('div');
-        linkLayerDiv.className = 'link-overlay-layer';
-        pageWrapper.appendChild(linkLayerDiv);
-
-        container.appendChild(pageWrapper);
-
-        // Render Canvas
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-
-        // Render Links dynamically
-        try {
-          const annotations = await page.getAnnotations();
-          if (annotations && annotations.length > 0) {
-            annotations.forEach(annot => {
-              const url = annot.url || annot.unsafeUrl;
-              if (annot.subtype === 'Link' && url) {
-                const rect = viewport.convertToViewportRectangle(annot.rect);
-                const left = Math.min(rect[0], rect[2]);
-                const top = Math.min(rect[1], rect[3]);
-                const width = Math.abs(rect[2] - rect[0]);
-                const height = Math.abs(rect[3] - rect[1]);
-
-                const linkEl = document.createElement('a');
-                linkEl.href = url;
-                linkEl.target = '_blank';
-                linkEl.rel = 'noopener noreferrer';
-                linkEl.style.position = 'absolute';
-                linkEl.style.left = (left / viewport.width * 100) + '%';
-                linkEl.style.top = (top / viewport.height * 100) + '%';
-                linkEl.style.width = (width / viewport.width * 100) + '%';
-                linkEl.style.height = (height / viewport.height * 100) + '%';
-                linkEl.className = 'pdf-link-overlay';
-                
-                linkLayerDiv.appendChild(linkEl);
-              }
-            });
-          }
-        } catch (linkErr) {
-          console.warn('링크 오버레이 생성 경고:', linkErr);
-        }
-      }
-    }).catch(function(error) {
-      console.error('PDF.js 로드 오류:', error);
-      loadNativeFallback();
-    });
-  }
-</script>
 </body>
 </html>
