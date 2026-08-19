@@ -12,8 +12,12 @@
     background: linear-gradient(180deg, #f4f8f5 0%, #eef4ef 100%);
     color: #1F3A2B;
     min-height: 100vh;
-    overflow-y: scroll;
   }
+  body.project-active {
+    overflow: hidden;
+  }
+  
+  /* Unified Header */
   header {
     position: sticky;
     top: 0;
@@ -22,33 +26,54 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 14px 24px;
+    height: 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(76, 138, 100, 0.15);
+  }
+  header .left-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   header .brand {
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #2E4A38;
     font-size: 17px;
-    cursor: pointer;
     text-decoration: none;
   }
   header .brand span {
     color: #4C8A64;
     font-weight: 500;
   }
-  header .actions {
-    display: flex;
-    gap: 12px;
+  header .back-btn {
+    display: none; /* shown in project view */
     align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4C8A64;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s;
   }
+  header .back-btn:hover {
+    color: #3d7352;
+  }
+  header .project-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F3A2B;
+    display: none;
+  }
+  
   header a.dl {
     font-size: 13px;
     color: #fff;
     background: #4C8A64;
-    padding: 9px 16px;
+    padding: 8px 14px;
     border-radius: 20px;
     text-decoration: none;
     font-weight: 600;
@@ -61,27 +86,17 @@
     box-shadow: 0 4px 12px rgba(76, 138, 100, 0.35);
   }
   
-  /* Views Container */
-  .view-container {
+  /* Home view layout */
+  .home-container {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 40px 16px 80px;
-    display: none; /* hidden by default, toggled via JS */
+    padding: 60px 16px 80px;
   }
-  .view-container.active {
-    display: block;
-    animation: fadeIn 0.4s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
+  
   /* Profile Section */
   .profile-section {
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
   .profile-section h1 {
     font-size: 32px;
@@ -96,7 +111,7 @@
     color: #5E7266;
     max-width: 680px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.65;
     word-break: keep-all;
   }
 
@@ -105,7 +120,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 32px;
-    margin-bottom: 40px;
   }
   @media (max-width: 768px) {
     .project-grid {
@@ -193,50 +207,22 @@
     margin-top: auto;
   }
 
-  /* Detail Views styling */
-  .back-nav {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #4C8A64;
-    cursor: pointer;
-    text-decoration: none;
-    margin-bottom: 24px;
-    transition: color 0.2s;
-  }
-  .back-nav:hover {
-    color: #3d7352;
-  }
-  .detail-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  .page-card {
-    position: relative;
+  /* SPA Project View frames */
+  .project-view-container {
     width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 30px rgba(31, 58, 43, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-    background: #fff;
-    line-height: 0;
+    height: calc(100vh - 56px);
+    display: none;
+    background: #f4f8f5;
   }
-  .page-card img {
-    width: 100%;
-    height: auto;
+  .project-view-container.active {
     display: block;
   }
-  
-  /* Pure transparent clickable link overlays */
-  .link-overlay {
-    position: absolute;
-    display: block;
-    cursor: pointer;
-    background: transparent;
+  .project-view-container iframe {
+    width: 100%;
+    height: 100%;
     border: none;
-    outline: none;
+    display: block;
+    background: #ffffff;
   }
 
   footer {
@@ -246,23 +232,25 @@
     font-size: 13px;
     border-top: 1px solid rgba(76, 138, 100, 0.1);
     max-width: 1040px;
-    margin: 0 auto;
+    margin: 40px auto 0;
   }
 </style>
 </head>
 <body>
 <header>
-  <a class="brand" href="#home">신하니 <span>portfolio</span></a>
-  <div class="actions">
-    <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
+  <div class="left-area">
+    <a class="back-btn" href="#home" id="header-back-btn">&larr; 목록으로</a>
+    <a class="brand" href="#home" id="header-brand-logo">신하니 <span>portfolio</span></a>
+    <span class="project-title" id="header-project-title"></span>
   </div>
+  <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
 </header>
 
 <!-- 1. HOME VIEW -->
-<main id="view-home" class="view-container">
+<div id="view-home" class="home-container">
   <section class="profile-section">
     <h1>안녕하세요, 사용자 가치를 고민하는 PM 신하니입니다.</h1>
-    <p>주변의 불편함을 포착해 직접 기획·개발·배포하며 실사용자 검증까지 도출해내는 PM입니다. 비즈니스 요구사항과 엔지니어링 사이의 소통을 책임지며 완성도 있는 서비스를 만듭니다.</p>
+    <p>주변의 불편함을 포착해 직접 기획·개발·배포하며 실사용자 검증까지 도출해내는 PM입니다. 비즈니스 요구사항 and 엔지니어링 사이의 소통을 책임지며 완성도 있는 서비스를 만듭니다.</p>
   </section>
 
   <div class="project-grid">
@@ -300,88 +288,84 @@
       </div>
     </article>
   </div>
-</main>
+</div>
 
-<!-- 2. PROJECT 1 VIEW (모두의 외근: 1~12p) -->
-<main id="view-fieldwork" class="view-container">
-  <a class="back-nav" href="#home">&larr; 전체 프로젝트 목록으로</a>
-  <div class="detail-wrapper">
-    <!-- Page 01 -->
-    <div class="page-card">
-      <img src="images/page-01.jpg" alt="모두의 외근 페이지 1">
-      <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 78.5%; top: 85%; width: 17%; height: 6.5%;" title="whygeun101.com 바로가기"></a>
-    </div>
-    
-    <div class="page-card"><img src="images/page-02.jpg" alt="모두의 외근 페이지 2"></div>
-    <div class="page-card"><img src="images/page-03.jpg" alt="모두의 외근 페이지 3"></div>
-    <div class="page-card"><img src="images/page-04.jpg" alt="모두의 외근 페이지 4"></div>
-    <div class="page-card"><img src="images/page-05.jpg" alt="모두의 외근 페이지 5"></div>
-    <div class="page-card"><img src="images/page-06.jpg" alt="모두의 외근 페이지 6"></div>
-    <div class="page-card"><img src="images/page-07.jpg" alt="모두의 외근 페이지 7"></div>
-    <div class="page-card"><img src="images/page-08.jpg" alt="모두의 외근 페이지 8"></div>
-    <div class="page-card"><img src="images/page-09.jpg" alt="모두의 외근 페이지 9"></div>
-    <div class="page-card"><img src="images/page-10.jpg" alt="모두의 외근 페이지 10"></div>
-    <div class="page-card"><img src="images/page-11.jpg" alt="모두의 외근 페이지 11"></div>
+<!-- 2. PROJECT 1 VIEW (iframe: fieldwork101_portfolio.html) -->
+<div id="view-fieldwork" class="project-view-container">
+  <iframe src="about:blank" id="iframe-fieldwork"></iframe>
+</div>
 
-    <!-- Page 12 -->
-    <div class="page-card">
-      <img src="images/page-12.jpg" alt="모두의 외근 페이지 12">
-      <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 5%; top: 86.5%; width: 23.5%; height: 6%;" title="서비스 바로가기 · whygeun101.com"></a>
-    </div>
-  </div>
-</main>
+<!-- 3. PROJECT 2 VIEW (iframe: PAWINMATCH_portfolio.html) -->
+<div id="view-pawinmatch" class="project-view-container">
+  <iframe src="about:blank" id="iframe-pawinmatch"></iframe>
+</div>
 
-<!-- 3. PROJECT 2 VIEW (PAWINMATCH: 13~22p) -->
-<main id="view-pawinmatch" class="view-container">
-  <a class="back-nav" href="#home">&larr; 전체 프로젝트 목록으로</a>
-  <div class="detail-wrapper">
-    <div class="page-card"><img src="images/page-13.jpg" alt="PAWINMATCH 페이지 13"></div>
-    <div class="page-card"><img src="images/page-14.jpg" alt="PAWINMATCH 페이지 14"></div>
-    <div class="page-card"><img src="images/page-15.jpg" alt="PAWINMATCH 페이지 15"></div>
-    <div class="page-card"><img src="images/page-16.jpg" alt="PAWINMATCH 페이지 16"></div>
-    <div class="page-card"><img src="images/page-17.jpg" alt="PAWINMATCH 페이지 17"></div>
-    <div class="page-card"><img src="images/page-18.jpg" alt="PAWINMATCH 페이지 18"></div>
-    <div class="page-card"><img src="images/page-19.jpg" alt="PAWINMATCH 페이지 19"></div>
-    <div class="page-card"><img src="images/page-20.jpg" alt="PAWINMATCH 페이지 20"></div>
-    <div class="page-card"><img src="images/page-21.jpg" alt="PAWINMATCH 페이지 21"></div>
-
-    <!-- Page 22 -->
-    <div class="page-card">
-      <img src="images/page-22.jpg" alt="PAWINMATCH 페이지 22">
-      <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 6.2%; top: 85.5%; width: 14%; height: 6.5%;" title="PAWINMATCH 서비스 바로가기"></a>
-      <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 21.3%; top: 85.5%; width: 10.2%; height: 6.5%;" title="GitHub 바로가기"></a>
-      <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 32.5%; top: 85.5%; width: 13.2%; height: 6.5%;" title="프로젝트 회고 바로가기"></a>
-    </div>
-  </div>
-</main>
-
-<footer>
+<footer id="main-footer">
   신하니 &middot; re____@naver.com &middot; PM 포트폴리오
 </footer>
 
 <script>
+  const viewHome = document.getElementById('view-home');
+  const viewFieldwork = document.getElementById('view-fieldwork');
+  const viewPawinmatch = document.getElementById('view-pawinmatch');
+  
+  const iframeFieldwork = document.getElementById('iframe-fieldwork');
+  const iframePawinmatch = document.getElementById('iframe-pawinmatch');
+  
+  const backBtn = document.getElementById('header-back-btn');
+  const brandLogo = document.getElementById('header-brand-logo');
+  const projectTitle = document.getElementById('header-project-title');
+  const mainFooter = document.getElementById('main-footer');
+
   function handleRouting() {
     const hash = window.location.hash || '#home';
     
-    // Deactivate all views
-    document.querySelectorAll('.view-container').forEach(view => {
-      view.classList.remove('active');
-    });
+    // Reset view visibility
+    viewHome.style.display = 'none';
+    viewFieldwork.classList.remove('active');
+    viewPawinmatch.classList.remove('active');
     
-    // Activate requested view
+    // Reset header text and buttons
+    backBtn.style.display = 'none';
+    brandLogo.style.display = 'inline-block';
+    projectTitle.style.display = 'none';
+    mainFooter.style.display = 'block';
+    document.body.classList.remove('project-active');
+
     if (hash === '#project-fieldwork') {
-      document.getElementById('view-fieldwork').classList.add('active');
+      viewFieldwork.classList.add('active');
+      document.body.classList.add('project-active');
+      backBtn.style.display = 'inline-flex';
+      brandLogo.style.display = 'none';
+      projectTitle.style.display = 'inline-block';
+      projectTitle.textContent = '모두의 외근 (Fieldwork101)';
+      mainFooter.style.display = 'none';
+      
+      // Load iframe if empty
+      if (iframeFieldwork.src === 'about:blank' || iframeFieldwork.getAttribute('data-loaded') !== 'true') {
+        iframeFieldwork.src = './portfolio/fieldwork101_portfolio.html';
+        iframeFieldwork.setAttribute('data-loaded', 'true');
+      }
     } else if (hash === '#project-pawinmatch') {
-      document.getElementById('view-pawinmatch').classList.add('active');
+      viewPawinmatch.classList.add('active');
+      document.body.classList.add('project-active');
+      backBtn.style.display = 'inline-flex';
+      brandLogo.style.display = 'none';
+      projectTitle.style.display = 'inline-block';
+      projectTitle.textContent = 'PAWINMATCH (포인매치)';
+      mainFooter.style.display = 'none';
+      
+      // Load iframe if empty
+      if (iframePawinmatch.src === 'about:blank' || iframePawinmatch.getAttribute('data-loaded') !== 'true') {
+        iframePawinmatch.src = './portfolio/PAWINMATCH_portfolio.html';
+        iframePawinmatch.setAttribute('data-loaded', 'true');
+      }
     } else {
-      document.getElementById('view-home').classList.add('active');
+      viewHome.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
-    
-    // Scroll window to top
-    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
-  // Bind routing event handlers
   window.addEventListener('hashchange', handleRouting);
   window.addEventListener('DOMContentLoaded', handleRouting);
 </script>
