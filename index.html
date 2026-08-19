@@ -12,6 +12,7 @@
     background: linear-gradient(180deg, #f4f8f5 0%, #eef4ef 100%);
     color: #1F3A2B;
     min-height: 100vh;
+    overflow-y: scroll;
   }
   header {
     position: sticky;
@@ -31,10 +32,17 @@
     letter-spacing: -0.02em;
     color: #2E4A38;
     font-size: 17px;
+    cursor: pointer;
+    text-decoration: none;
   }
   header .brand span {
     color: #4C8A64;
     font-weight: 500;
+  }
+  header .actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
   }
   header a.dl {
     font-size: 13px;
@@ -52,10 +60,156 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(76, 138, 100, 0.35);
   }
-  main {
+  
+  /* Views Container */
+  .view-container {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 24px 16px 80px;
+    padding: 40px 16px 80px;
+    display: none; /* hidden by default, toggled via JS */
+  }
+  .view-container.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Profile Section */
+  .profile-section {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .profile-section h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1F3A2B;
+    line-height: 1.35;
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+  }
+  .profile-section p {
+    font-size: 16px;
+    color: #5E7266;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  /* Project Grid Layout */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 768px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .profile-section h1 {
+      font-size: 24px;
+    }
+  }
+
+  /* Project Cards styling */
+  .project-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(31, 58, 43, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(31, 58, 43, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .project-card .img-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #eef4ef;
+    position: relative;
+    border-bottom: 1px solid rgba(76, 138, 100, 0.1);
+  }
+  .project-card .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .project-card:hover .img-wrapper img {
+    transform: scale(1.03);
+  }
+  .project-card .card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .project-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .project-card .tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4C8A64;
+    background: #eaf2ed;
+    padding: 4px 8px;
+    border-radius: 12px;
+  }
+  .project-card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1F3A2B;
+    margin-bottom: 10px;
+  }
+  .project-card p {
+    font-size: 14px;
+    color: #5E7266;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    word-break: keep-all;
+  }
+  .project-card .more-btn {
+    font-size: 13px;
+    font-weight: 700;
+    color: #4C8A64;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: auto;
+  }
+
+  /* Detail Views styling */
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4C8A64;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+  }
+  .back-nav:hover {
+    color: #3d7352;
+  }
+  .detail-wrapper {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -75,7 +229,7 @@
     display: block;
   }
   
-  /* Pure transparent clickable link overlay (No hover effects) */
+  /* Pure transparent clickable link overlays */
   .link-overlay {
     position: absolute;
     display: block;
@@ -87,63 +241,149 @@
 
   footer {
     text-align: center;
-    padding: 40px 20px 60px;
+    padding: 60px 20px 80px;
     color: #5E7266;
     font-size: 13px;
+    border-top: 1px solid rgba(76, 138, 100, 0.1);
+    max-width: 1040px;
+    margin: 0 auto;
   }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">신하니 <span>portfolio</span></div>
-  <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
+  <a class="brand" href="#home">신하니 <span>portfolio</span></a>
+  <div class="actions">
+    <a class="dl" href="portfolio.pdf" download>PDF 다운로드</a>
+  </div>
 </header>
-<main>
-  <!-- Page 01 (LIVE: whygeun101.com) -->
-  <div class="page-card">
-    <img src="images/page-01.jpg" alt="포트폴리오 페이지 1" loading="eager">
-    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 78.5%; top: 85%; width: 17%; height: 6.5%;" title="whygeun101.com 바로가기"></a>
-  </div>
 
-  <!-- Pages 02 ~ 11 -->
-  <div class="page-card"><img src="images/page-02.jpg" alt="포트폴리오 페이지 2" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-03.jpg" alt="포트폴리오 페이지 3" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-04.jpg" alt="포트폴리오 페이지 4" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-05.jpg" alt="포트폴리오 페이지 5" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-06.jpg" alt="포트폴리오 페이지 6" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-07.jpg" alt="포트폴리오 페이지 7" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-08.jpg" alt="포트폴리오 페이지 8" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-09.jpg" alt="포트폴리오 페이지 9" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-10.jpg" alt="포트폴리오 페이지 10" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-11.jpg" alt="포트폴리오 페이지 11" loading="lazy"></div>
+<!-- 1. HOME VIEW -->
+<main id="view-home" class="view-container">
+  <section class="profile-section">
+    <h1>안녕하세요, 사용자 가치를 고민하는 PM 신하니입니다.</h1>
+    <p>주변의 불편함을 포착해 직접 기획·개발·배포하며 실사용자 검증까지 도출해내는 PM입니다. 비즈니스 요구사항과 엔지니어링 사이의 소통을 책임지며 완성도 있는 서비스를 만듭니다.</p>
+  </section>
 
-  <!-- Page 12 (서비스 바로가기 · whygeun101.com) -->
-  <div class="page-card">
-    <img src="images/page-12.jpg" alt="포트폴리오 페이지 12" loading="lazy">
-    <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 5%; top: 86.5%; width: 23.5%; height: 6%;" title="서비스 바로가기 · whygeun101.com"></a>
-  </div>
+  <div class="project-grid">
+    <!-- Card 1: 모두의 외근 -->
+    <article class="project-card" onclick="location.hash='#project-fieldwork'">
+      <div class="img-wrapper">
+        <img src="images/page-01.jpg" alt="모두의 외근">
+      </div>
+      <div class="card-content">
+        <div class="tags">
+          <span class="tag">1인 프로젝트</span>
+          <span class="tag">B2B 외근 관리</span>
+          <span class="tag">Next.js / Spring</span>
+        </div>
+        <h2>모두의 외근 (Fieldwork101)</h2>
+        <p>현장 매니저의 일평균 20분 반복 소요되던 주소 정제 및 이동 동선 준비 업무를 단 1분으로 단축하고, 초기 사용자의 실제 결제 지불 의사까지 검증해낸 B2B 특화 웹 솔루션입니다.</p>
+        <span class="more-btn">프로젝트 보기 &rarr;</span>
+      </div>
+    </article>
 
-  <!-- Pages 13 ~ 21 -->
-  <div class="page-card"><img src="images/page-13.jpg" alt="포트폴리오 페이지 13" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-14.jpg" alt="포트폴리오 페이지 14" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-15.jpg" alt="포트폴리오 페이지 15" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-16.jpg" alt="포트폴리오 페이지 16" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-17.jpg" alt="포트폴리오 페이지 17" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-18.jpg" alt="포트폴리오 페이지 18" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-19.jpg" alt="포트폴리오 페이지 19" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-20.jpg" alt="포트폴리오 페이지 20" loading="lazy"></div>
-  <div class="page-card"><img src="images/page-21.jpg" alt="포트폴리오 페이지 21" loading="lazy"></div>
-
-  <!-- Page 22 (PAWINMATCH 3 buttons) -->
-  <div class="page-card">
-    <img src="images/page-22.jpg" alt="포트폴리오 페이지 22" loading="lazy">
-    <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 6.2%; top: 85.5%; width: 14%; height: 6.5%;" title="PAWINMATCH 서비스 바로가기"></a>
-    <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 21.3%; top: 85.5%; width: 10.2%; height: 6.5%;" title="GitHub 바로가기"></a>
-    <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 32.5%; top: 85.5%; width: 13.2%; height: 6.5%;" title="프로젝트 회고 바로가기"></a>
+    <!-- Card 2: PAWINMATCH -->
+    <article class="project-card" onclick="location.hash='#project-pawinmatch'">
+      <div class="img-wrapper">
+        <img src="images/page-13.jpg" alt="PAWINMATCH">
+      </div>
+      <div class="card-content">
+        <div class="tags">
+          <span class="tag">AI 입양 매칭</span>
+          <span class="tag">팀 프로젝트 (3인)</span>
+          <span class="tag">LangChain / FastAPI</span>
+        </div>
+        <h2>PAWINMATCH (포인매치)</h2>
+        <p>나에게 꼭 어울리는 유기동물 입양을 돕는 매칭 플랫폼입니다. 대형 언어 모델(LLM)과 LangChain을 설계하여 사용자 환경 정보를 기반으로 심층 매칭 및 입양 적합도를 자동 검사합니다.</p>
+        <span class="more-btn">프로젝트 보기 &rarr;</span>
+      </div>
+    </article>
   </div>
 </main>
+
+<!-- 2. PROJECT 1 VIEW (모두의 외근: 1~12p) -->
+<main id="view-fieldwork" class="view-container">
+  <a class="back-nav" href="#home">&larr; 전체 프로젝트 목록으로</a>
+  <div class="detail-wrapper">
+    <!-- Page 01 -->
+    <div class="page-card">
+      <img src="images/page-01.jpg" alt="모두의 외근 페이지 1">
+      <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 78.5%; top: 85%; width: 17%; height: 6.5%;" title="whygeun101.com 바로가기"></a>
+    </div>
+    
+    <div class="page-card"><img src="images/page-02.jpg" alt="모두의 외근 페이지 2"></div>
+    <div class="page-card"><img src="images/page-03.jpg" alt="모두의 외근 페이지 3"></div>
+    <div class="page-card"><img src="images/page-04.jpg" alt="모두의 외근 페이지 4"></div>
+    <div class="page-card"><img src="images/page-05.jpg" alt="모두의 외근 페이지 5"></div>
+    <div class="page-card"><img src="images/page-06.jpg" alt="모두의 외근 페이지 6"></div>
+    <div class="page-card"><img src="images/page-07.jpg" alt="모두의 외근 페이지 7"></div>
+    <div class="page-card"><img src="images/page-08.jpg" alt="모두의 외근 페이지 8"></div>
+    <div class="page-card"><img src="images/page-09.jpg" alt="모두의 외근 페이지 9"></div>
+    <div class="page-card"><img src="images/page-10.jpg" alt="모두의 외근 페이지 10"></div>
+    <div class="page-card"><img src="images/page-11.jpg" alt="모두의 외근 페이지 11"></div>
+
+    <!-- Page 12 -->
+    <div class="page-card">
+      <img src="images/page-12.jpg" alt="모두의 외근 페이지 12">
+      <a href="https://whygeun101.com" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 5%; top: 86.5%; width: 23.5%; height: 6%;" title="서비스 바로가기 · whygeun101.com"></a>
+    </div>
+  </div>
+</main>
+
+<!-- 3. PROJECT 2 VIEW (PAWINMATCH: 13~22p) -->
+<main id="view-pawinmatch" class="view-container">
+  <a class="back-nav" href="#home">&larr; 전체 프로젝트 목록으로</a>
+  <div class="detail-wrapper">
+    <div class="page-card"><img src="images/page-13.jpg" alt="PAWINMATCH 페이지 13"></div>
+    <div class="page-card"><img src="images/page-14.jpg" alt="PAWINMATCH 페이지 14"></div>
+    <div class="page-card"><img src="images/page-15.jpg" alt="PAWINMATCH 페이지 15"></div>
+    <div class="page-card"><img src="images/page-16.jpg" alt="PAWINMATCH 페이지 16"></div>
+    <div class="page-card"><img src="images/page-17.jpg" alt="PAWINMATCH 페이지 17"></div>
+    <div class="page-card"><img src="images/page-18.jpg" alt="PAWINMATCH 페이지 18"></div>
+    <div class="page-card"><img src="images/page-19.jpg" alt="PAWINMATCH 페이지 19"></div>
+    <div class="page-card"><img src="images/page-20.jpg" alt="PAWINMATCH 페이지 20"></div>
+    <div class="page-card"><img src="images/page-21.jpg" alt="PAWINMATCH 페이지 21"></div>
+
+    <!-- Page 22 -->
+    <div class="page-card">
+      <img src="images/page-22.jpg" alt="PAWINMATCH 페이지 22">
+      <a href="https://pawinhand-clone.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 6.2%; top: 85.5%; width: 14%; height: 6.5%;" title="PAWINMATCH 서비스 바로가기"></a>
+      <a href="https://github.com/haneebunny/pawinmatch" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 21.3%; top: 85.5%; width: 10.2%; height: 6.5%;" title="GitHub 바로가기"></a>
+      <a href="https://hani-honey.tistory.com/358" target="_blank" rel="noopener noreferrer" class="link-overlay" style="left: 32.5%; top: 85.5%; width: 13.2%; height: 6.5%;" title="프로젝트 회고 바로가기"></a>
+    </div>
+  </div>
+</main>
+
 <footer>
-  신하니 &middot; re____@naver.com
+  신하니 &middot; re____@naver.com &middot; PM 포트폴리오
 </footer>
+
+<script>
+  function handleRouting() {
+    const hash = window.location.hash || '#home';
+    
+    // Deactivate all views
+    document.querySelectorAll('.view-container').forEach(view => {
+      view.classList.remove('active');
+    });
+    
+    // Activate requested view
+    if (hash === '#project-fieldwork') {
+      document.getElementById('view-fieldwork').classList.add('active');
+    } else if (hash === '#project-pawinmatch') {
+      document.getElementById('view-pawinmatch').classList.add('active');
+    } else {
+      document.getElementById('view-home').classList.add('active');
+    }
+    
+    // Scroll window to top
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // Bind routing event handlers
+  window.addEventListener('hashchange', handleRouting);
+  window.addEventListener('DOMContentLoaded', handleRouting);
+</script>
 </body>
 </html>
